@@ -6,17 +6,7 @@
 </head>
 <body>
     <h1>{{ object.company_name }}を本当に削除しますか？</h1>
-    <body>
-    <h1>{{ customer.company_name }}</h1>
-
-    <p>
-        <a href="{% url 'customer_update' customer.pk %}">[編集する]</a> 
-        <a href="{% url 'customer_delete' customer.pk %}" style="color: red;">[削除する]</a>
-    </p>
-
-    <p>
-        <strong>担当者名:</strong> {{ customer.contact_name }}
-    </p>
+    
     <p>この操作は元に戻せません。</p>
 
     <form method="POST">
