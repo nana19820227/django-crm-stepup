@@ -1,22 +1,10 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <title>削除の確認</title>
-</head>
-<body>
+{% extends "crm_app/base.html" %}
+
+{% block title %}削除の確認{% endblock %}
+
+{% block content %}
     <h1>{{ object.company_name }}を本当に削除しますか？</h1>
-    <body>
-    <h1>{{ customer.company_name }}</h1>
-
-    <p>
-        <a href="{% url 'customer_update' customer.pk %}">[編集する]</a> 
-        <a href="{% url 'customer_delete' customer.pk %}" style="color: red;">[削除する]</a>
-    </p>
-
-    <p>
-        <strong>担当者名:</strong> {{ customer.contact_name }}
-    </p>
+    
     <p>この操作は元に戻せません。</p>
 
     <form method="POST">
@@ -24,5 +12,4 @@
         <button type="submit" style="color: red;">はい、削除します</button>
         <a href="{% url 'customer_detail' object.pk %}">いいえ、キャンセルします</a>
     </form>
-</body>
-</html>
+{% endblock content %}

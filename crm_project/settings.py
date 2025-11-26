@@ -127,11 +127,13 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# crm_project/settings.py (ファイル末尾に追記)
+# crm_project/settings.py (ファイル末尾の追記部分の最終版)
 
-# ログイン成功後のリダイレクト先 (URL名ではなくパスで指定。ルートの '/' に設定)
-LOGIN_REDIRECT_URL = '/'
+# ログイン成功後のリダイレクト先 (URL名で指定)
+LOGIN_REDIRECT_URL = 'customer_list' 
 
-# ログインが必要なページにアクセスした場合のリダイレクト先 (URL名で指定)
-# Django標準のログインURLは 'account/login/' ですが、URL名 'login' で指定
+# ログアウト後にリダイレクトする先のURL名
+LOGOUT_REDIRECT_URL = 'login' 
+
+# ログインが必要なページにアクセスした場合のリダイレクト先
 LOGIN_URL = 'login'
