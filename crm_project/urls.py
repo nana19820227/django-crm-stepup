@@ -4,9 +4,12 @@ from django.contrib import admin
 from django.urls import path, include 
 
 urlpatterns = [
-    # Adminサイトへのルーティング
+    # 1. AdminサイトのURL
     path('admin/', admin.site.urls),
     
-    # ルートURL (http://127.0.0.1:8000/) を crm_app の urls.py へ誘導
+    # 2. Django標準の認証URLを読み込む (ここに追加)
+    path('accounts/', include('django.contrib.auth.urls')), # <--- この行を追加
+    
+    # 3. crm_appのURLをルートに誘導
     path('', include('crm_app.urls')),
 ]
