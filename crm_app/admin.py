@@ -8,7 +8,7 @@ class TagAdmin(admin.ModelAdmin):
 
 # 顧客モデル用の設定 (CustomerAdmin)
 class CustomerAdmin(admin.ModelAdmin):
-    # 'user' フィールドは Customer モデルにあるため、残します。
+    # Customer モデルには 'user' (担当営業) があるため、残します。
     list_display = ('company_name', 'contact_name', 'email', 'user', 'created_at',)
     list_filter = ('tags', 'user',)
     search_fields = ('company_name', 'contact_name', 'email',)
@@ -23,24 +23,23 @@ class CustomerAdmin(admin.ModelAdmin):
 
 
 # 商談履歴モデル用の設定 (ActivityAdmin)
-# 🚨 ERROR: Activityモデルにない 'user' の参照が残っています (先生のオリジナルコードのまま)
+# 🚨 エラー箇所を修正: Activity モデルに直接 'user' フィールドはないため、削除します。
 class ActivityAdmin(admin.ModelAdmin):
-    # 'user' の参照が残る (SystemCheckErrorの原因)
-    list_display = ('status', 'activity_date', 'customer', 'user', 'created_at',) 
-    # 'user' の参照が残る
-    list_filter = ('status', 'customer', 'user',) 
+    # 'user' の参照を削除
+    list_display = ('status', 'activity_date', 'customer', 'created_at',)
+    # 'user' の参照を削除
+    list_filter = ('status', 'customer',)
     
     search_fields = ('customer__company_name', 'note',)
     
     date_hierarchy = 'activity_date'
     
-    # 'user' の参照が残る
-    fields = ('customer', 'user', 'activity_date', 'status', 'note',)
+    # 'user' の参照を削除
+    fields = ('customer', 'activity_date', 'status', 'note',)
     
-    # 'user' の参照が残る
-    raw_id_fields = ('customer', 'user',) 
-
-
+    # 'user' の参照を削除
+    raw_id_fields = ('customer',) # 修正後
+    
 # Adminサイトにモデルと設定クラスを登録する
 admin.site.register(Tag, TagAdmin)
 admin.site.register(Customer, CustomerAdmin)
