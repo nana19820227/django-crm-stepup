@@ -1,11 +1,12 @@
 # crm_app/views.py
 
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.contrib.auth.mixins import LoginRequiredMixin  # 認証 (ログイン必須)
-from django.shortcuts import get_object_or_404
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView 
+from django.urls import reverse_lazy 
+from django.contrib.auth.mixins import LoginRequiredMixin 
+from django.shortcuts import get_object_or_404, redirect 
+from django.db.models import Q #  Qをインポート 
 from .models import Customer
-from .forms import CustomerForm
+from .forms import CustomerForm 
 
 
 # 顧客一覧表示ビュー (ListView)
@@ -15,10 +16,32 @@ class CustomerListView(LoginRequiredMixin, ListView):
     context_object_name = 'customers'
     paginate_by = 10
 
-    # 認可: ログインしているユーザーが担当の会社だけを取得する
+    
     def get_queryset(self):
-        return Customer.objects.filter(user=self.request.user).order_by("company_name")
+        # 1. まず、基本となる「自分の担当顧客」を取得
+        queryset = Customer.objects.filter(user=self.request.user).order_by('company_name')
 
+        # 2. GETパラメータから 'query' (検索キーワード) を取得
+        query = self.request.GET.get('query')
+
+        # 3. キーワードが存在する場合のみOR絞り込みを行う
+        if query:
+            # Qオブジェクトを使って「OR条件」を構築
+            queryset = queryset.filter(
+                Q(company_name__icontains=query) | 
+                Q(contact_name__icontains=query) |
+                Q(email__icontains=query) |
+                Q(tags__name__icontains=query)  # タグ名での検索を追加
+            ).distinct() # 重複を排除 (重要)
+        
+        return queryset
+    
+    # 検索キーワードをテンプレートに返すための設定 (UX向上)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # テンプレートに { 'query': ユーザーの入力値 } を設定 (UX向上)
+        context['query'] = self.request.GET.get('query', '')
+        return context
 
 # 顧客詳細表示ビュー (DetailView)
 class CustomerDetailView(LoginRequiredMixin, DetailView):
