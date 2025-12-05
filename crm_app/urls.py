@@ -6,10 +6,13 @@ from .views import (
     CustomerDetailView,
     CustomerCreateView, 
     CustomerUpdateView, 
-    CustomerDeleteView # インポートするビューが増える
-) # 閉じ括弧を追加
+    CustomerDeleteView ,
+    ajax_add_activity # ★ 新規追加
+) 
 
 urlpatterns = [
+    
+    
     # 顧客一覧ページ (R: Read List)
     path('', CustomerListView.as_view(), name='customer_list'),
 
@@ -24,4 +27,8 @@ urlpatterns = [
 
     # 削除確認ページ (D: Delete)
     path('customer/<int:pk>/delete/', CustomerDeleteView.as_view(), name='customer_delete'), 
+
+    # Ajax処理用URL
+    path('ajax_add_activity/', ajax_add_activity, name='ajax_add_activity'), 
+
 ]

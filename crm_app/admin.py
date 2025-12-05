@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Customer, Activity, Tag # 作成したモデルをインポート
+from .models import Customer, Activity, Tag 
 
 # Tagモデル用の設定 (TagAdmin)
 class TagAdmin(admin.ModelAdmin):

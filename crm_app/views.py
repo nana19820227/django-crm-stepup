@@ -7,6 +7,13 @@ from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Q #  Qをインポート 
 from .models import Customer
 from .forms import CustomerForm 
+from django.shortcuts import get_object_or_404, redirect, render
+from django.http import JsonResponse # JsonResponse をインポート
+from django.views.decorators.http import require_POST, require_GET
+from django.contrib.auth.decorators import login_required 
+from .models import Customer, Activity
+from .forms import CustomerForm, ActivityForm 
+
 
 
 # 顧客一覧表示ビュー (ListView)
@@ -91,3 +98,37 @@ class CustomerDeleteView(LoginRequiredMixin, DeleteView):
     # 認可: 自分が担当のデータのみを対象とする
     def get_queryset(self):
         return Customer.objects.filter(user=self.request.user)
+# Ajax専用ビューの定義
+
+@login_required 
+@require_POST
+def ajax_add_activity(request):
+   
+    
+    customer_id = request.POST.get('customer_id')
+    customer = get_object_or_404(Customer, pk=customer_id)
+    
+    #自分の顧客でなければエラー
+    if customer.user != request.user:
+        return JsonResponse({'message': '権限がありません。'}, status=403)
+        
+    # フォームを使ってバリデーションエラー
+    form = ActivityForm(request.POST)
+
+    if form.is_valid():
+        # まだdbには保存しない
+        activity = form.save(commit=False)
+        activity.customer = customer#紐付け
+        activity.save()#保存
+        
+        #Java Script側に返すデータを辞書型で作る
+        response_data = {
+            'message': 'ok',
+            'activity_date': activity.activity_date.strftime('%Y-%m-%d'),
+            'status_display': activity.get_status_display(),
+            'note': activity.note,
+        }
+        return JsonResponse(response_data) #Jsonとして返す
+    else:
+        # バリデーションエラーの場合
+        return JsonResponse({'message': '入力内容に誤りがあります', 'errors': form.errors}, status=400)
