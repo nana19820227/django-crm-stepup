@@ -1,15 +1,14 @@
 #!/usr/bin/env bash
-# エラーが起きたら即停止する設定
 set -o errexit
 
-# #1. ライブラリのインストール
+echo "=== Upgrade pip ==="
+pip install --upgrade pip
+
+echo "=== Install requirements ==="
 pip install -r requirements.txt
 
-# #2. 静的ファイルの収集 (CSS等を staticfiles フォルダに集める)
-python manage.py collectstatic --no-input
+echo "=== Collect static files ==="
+python manage.py collectstatic --noinput
 
-# #3. データベースのマイグレーション（本番DBにテーブル作成）
+echo "=== Apply database migrations ==="
 python manage.py migrate
-
-pip install --upgrade pip &&pip install 
--requirements.txt
