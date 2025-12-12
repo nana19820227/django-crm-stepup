@@ -9,10 +9,11 @@ https://docs.djangoproject.com/en/5.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
-
+import dj_database_url # ファイルの冒頭でインポート
 from pathlib import Path
 import os # 追加
 from dotenv import load_dotenv # 追加
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,9 +30,9 @@ load_dotenv(os.path.join(BASE_DIR, '.env')) # 追加
 SECRET_KEY = os.environ.get('SECRET_KEY') # 環境変数からSECRET_KEYを取得するように変更
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -48,6 +49,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -85,7 +87,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
-
+# もし環境変数 DATABASE_URL があれば（本番環境）、それを使って上書きする
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -122,6 +126,17 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# ▼以下を追記
+# #1. 開発中に static フォルダに置いたファイルを集める場所
+STATICFILES_DIRS = [BASE_DIR / 'static'] 
+# (#もし static フォルダを作っていない場合は、空リスト [] でもOK。またはフォルダを作成)
+
+# #2. 本番環境で、全アプリの静的ファイルを集約する場所
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# #3. WhiteNoiseが圧縮して配信するための設定
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
