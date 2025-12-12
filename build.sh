@@ -11,3 +11,5 @@ python manage.py collectstatic --no-input
 # #3. データベースのマイグレーション（本番DBにテーブル作成）
 python manage.py migrate
 
+pip install --upgrade pip &&pip install 
+-requirements.txt
