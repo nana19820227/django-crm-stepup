@@ -1,9 +1,6 @@
 Django==5.2.1
 gunicorn==23.0.0
-psycopg2-binary==2.9.11
+psycopg2-binary==2.9.9  # バージョンを下げて安定化を試みます
 dj-database-url==3.0.1
 whitenoise==6.11.0
-
-# 必要に応じて残すもの
-pillow==11.2.1      # 画像アップロードに必要なら残す
-python-dotenv==1.0.1 # .envファイルを使うなら残す
+python-dotenv==1.0.1    
