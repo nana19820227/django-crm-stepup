@@ -3,16 +3,7 @@ gunicorn==23.0.0
 psycopg2-binary==2.9.11
 dj-database-url==3.0.1
 whitenoise==6.11.0
-python-dotenv==1.0.1
 
-# アプリ固有の依存関係（使用しているものだけ残す）
-mysqlclient==2.2.7  # MySQLを使う場合
-pillow==11.2.1      # 画像処理を使う場合
-requests==2.32.3    # 外部通信を行う場合
-
-# 基本的な依存関係
-asgiref==3.8.1
-sqlparse==0.5.3
-urllib3==2.4.0
-idna==3.10
-certifi==2025.4.26
+# 必要に応じて残すもの
+pillow==11.2.1      # 画像アップロードに必要なら残す
+python-dotenv==1.0.1 # .envファイルを使うなら残す
